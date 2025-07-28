@@ -68,7 +68,9 @@ We split the dataset into:
 - **Validation set**: `5000` samples. For monitoring generalization during training.
 - **Test set**: `10000` samples. For evaluating final performance.
 
-**Hint:** Use `train_test_split` **twice** to do two sets of splits. 
+**Hint:** Use `train_test_split` **twice** to do two sets of splits.
+
+**NOTE**: Set `random_state=123` in each `train_test_split` function for **reproducibility**.
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -281,7 +283,7 @@ def train(model, train_loader, optimizer, criterion):
         preds = model(X_batch)
         loss = criterion(preds, int_to_onehot(y_batch))
 
-        grad_output = loss_fn.backward() # Gradient of the loss w.r.t output
+        grad_output = criterion.backward() # Gradient of the loss w.r.t output
 
         model.backward(grad_output)
         optimizer.step()
@@ -349,6 +351,7 @@ Now that everything is in place, we can train the MLP using mini-batch SGD:
 num_epochs = 50
 batch_size = 100
 
+train_losses, valid_losses = [], []
 for epoch in range(num_epochs):
     # Usually in the PyTorch way, dataloader SHOULD NOT be in the epoch loop
     train_loader = minibatch_generator(X_train, y_train, minibatch_size=batch_size)
@@ -357,7 +360,31 @@ for epoch in range(num_epochs):
     train_loss = train(model, train_loader, optimizer, criterion=loss_fn)
     valid_loss, valid_acc = valid(model, valid_loader, criterion=loss_fn)
 
+    # Collect losses for plotting
+    train_losses.append(train_loss)
+    valid_losses.append(valid_loss)
+
     print(f"Epoch: {epoch+1:02d}/{num_epochs} | Train MSE: {train_loss:.4f} | Valid MSE: {valid_loss:.4f} | Valid Acc: {valid_acc:.2f}%")
+```
+
+### Plot the Loss Curves
+
+After training completes, plot both the training and validation loss on **a single graph** to visually compare them.
+
+- Use `matplotlib` to plot the two loss curves on the same figure.
+- Label your axes and add a legend.
+
+```python
+import matplotlib.pyplot as plt
+
+plt.plot(train_losses, label='Training Loss')
+plt.plot(valid_losses, label='Validation Loss')
+plt.xlabel('Epoch')
+plt.ylabel('MSE Loss')
+plt.title('Training vs Validation Loss')
+plt.legend()
+plt.grid(True)
+plt.show()
 ```
 
 ## 10. Final Evaluation on Test Set
