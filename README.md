@@ -17,6 +17,8 @@ This course is designed to provide a hands-on, weekly introduction to key ML con
 - [Week 03: Logistic Regression and Decision Trees](lectures/w03_logistic_and_trees/)
 - [Week 04: Sentiment Analysis](lectures/w04_sentiment_analysis/)
 - [Week 05: Multilayer Perceptron](lectures/w05_multilayer_perceptron/)
+- [Week 06: Neural Network with PyTorch](lectures/w06_neural_network_pytorch/)
+- [Week 07: Convolutional Neural Networks](lectures/w07_cnn/)
 - ...
 
 ## Assignments
